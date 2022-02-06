@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="ORB_SLAM3" name="RGBD_TUM" type="RGBD" args="$(find ORB_SLAM3)/../../../Vocabulary/ORBvoc.txt $(find ORB_SLAM3)/../../../Examples/RGB-D/TUM3.yaml" output="screen"/>
+</launch>
