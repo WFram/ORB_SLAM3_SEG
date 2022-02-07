@@ -219,29 +219,29 @@ System::System(const string &strVocFile, const string &strSettingsFile, const st
     mptSegment = new thread(&ORB_SLAM3::Segment::Run, mpSegment);
 
     // Initialize the Dynmacic Culling thread and launch
-    // mpDynamiCulling = new DynamicCulling();
-    // mptDynamicCulling = new thread(&ORB_SLAM3::DynamicCulling::Run, mpDynamiCulling);
+    mpDynamiCulling = new DynamicCulling();
+    mptDynamicCulling = new thread(&ORB_SLAM3::DynamicCulling::Run, mpDynamiCulling);
 
-    // mpDynamicsDetectors = new DynamicDetector();
+    mpDynamicsDetectors = new DynamicDetector();
 
     //Set pointers between threads
     mpTracker->SetLocalMapper(mpLocalMapper);
     mpTracker->SetLoopClosing(mpLoopCloser);
     mpTracker->SetSegment(mpSegment);
-    // mpTracker->SetDynamicCuller(mpDynamiCulling);
+    mpTracker->SetDynamicCuller(mpDynamiCulling);
 
     mpLocalMapper->SetTracker(mpTracker);
     mpLocalMapper->SetLoopCloser(mpLoopCloser);
-    // mpLocalMapper->SetDynamicDetector(mpDynamicsDetectors);
+    mpLocalMapper->SetDynamicDetector(mpDynamicsDetectors);
 
     mpLoopCloser->SetTracker(mpTracker);
     mpLoopCloser->SetLocalMapper(mpLocalMapper);
 
-    // mpDynamiCulling->SetTracker(mpTracker);
-    // mpDynamiCulling->SetLocalMapper(mpLocalMapper);
-    // mpDynamiCulling->SetDynamicDetector(mpDynamicsDetectors);
+    mpDynamiCulling->SetTracker(mpTracker);
+    mpDynamiCulling->SetLocalMapper(mpLocalMapper);
+    mpDynamiCulling->SetDynamicDetector(mpDynamicsDetectors);
     
-    // mpDynamicsDetectors->SetMapper(mpAtlas);
+    mpDynamicsDetectors->SetMapper(mpAtlas);
 
     mpSegment->SetTracker(mpTracker);
 
@@ -546,7 +546,7 @@ void System::Shutdown()
 
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
-    // mpDynamiCulling->RequestFinish();
+    mpDynamiCulling->RequestFinish();
     mpSegment->RequestFinish();
     /*if(mpViewer)
     {

@@ -2439,8 +2439,8 @@ void Tracking::StereoInitialization()
         //cout << "Active map: " << mpAtlas->GetCurrentMap()->GetId() << endl;
 
         // Init KF will be add to LocalMap
-        mpLocalMapper->InsertKeyFrame(pKFini);
-        // mpDynamicCuller->InsertKeyFrame(pKFini);
+        // mpLocalMapper->InsertKeyFrame(pKFini);
+        mpDynamicCuller->InsertKeyFrame(pKFini);
 
         mLastFrame = Frame(mCurrentFrame);
         mnLastKeyFrameId = mCurrentFrame.mnId;
@@ -3120,7 +3120,7 @@ bool Tracking::NeedNewKeyFrame()
     // Local Mapping accept keyframes?
     bool bLocalMappingIdle = mpLocalMapper->AcceptKeyFrames();
     // K-means accept keyframes?
-    // bool bDynamicsCullingIdle = mpDynamicCuller->AcceptKeyFrames();
+    bool bDynamicsCullingIdle = mpDynamicCuller->AcceptKeyFrames();
 
     // Check how many "close" points are being tracked and how many could be potentially created.
     int nNonTrackedClose = 0;
@@ -3175,8 +3175,8 @@ bool Tracking::NeedNewKeyFrame()
     // Condition 1a: More than "MaxFrames" have passed from last keyframe insertion
     const bool c1a = mCurrentFrame.mnId>=mnLastKeyFrameId+mMaxFrames;
     // Condition 1b: More than "MinFrames" have passed and Local Mapping is idle
-    // const bool c1b = ((mCurrentFrame.mnId>=mnLastKeyFrameId+mMinFrames) && bDynamicsCullingIdle); //mpLocalMapper->KeyframesInQueue() < 2);
-    const bool c1b = ((mCurrentFrame.mnId>=mnLastKeyFrameId+mMinFrames) && bLocalMappingIdle);
+    const bool c1b = ((mCurrentFrame.mnId>=mnLastKeyFrameId+mMinFrames) && bDynamicsCullingIdle); //mpLocalMapper->KeyframesInQueue() < 2);
+    // const bool c1b = ((mCurrentFrame.mnId>=mnLastKeyFrameId+mMinFrames) && bLocalMappingIdle);
     //Condition 1c: tracking is weak
     const bool c1c = mSensor!=System::MONOCULAR && mSensor!=System::IMU_MONOCULAR && mSensor!=System::IMU_STEREO && mSensor!=System::IMU_RGBD && (mnMatchesInliers<nRefMatches*0.25 || bNeedToInsertClose) ;
     // Condition 2: Few tracked points compared to reference keyframe. Lots of visual odometry compared to map matches.
@@ -3209,8 +3209,8 @@ bool Tracking::NeedNewKeyFrame()
     {
         // If the mapping accepts keyframes, insert keyframe.
         // Otherwise send a signal to interrupt BA
-        if(bLocalMappingIdle || mpLocalMapper->IsInitializing())
-        // if(bDynamicsCullingIdle || mpLocalMapper->IsInitializing())
+        // if(bLocalMappingIdle || mpLocalMapper->IsInitializing())
+        if(bDynamicsCullingIdle || mpLocalMapper->IsInitializing())
         {
             return true;
         }
@@ -3219,8 +3219,8 @@ bool Tracking::NeedNewKeyFrame()
             // mpLocalMapper->InterruptBA();
             if(mSensor!=System::MONOCULAR  && mSensor!=System::IMU_MONOCULAR)
             {
-                // if(mpDynamicCuller->KeyframesInQueue()<3) // Adjust these parameters
-                if(mpLocalMapper->KeyframesInQueue()<3) // Adjust these parameters
+                if(mpDynamicCuller->KeyframesInQueue()<3) // Adjust these parameters
+                // if(mpLocalMapper->KeyframesInQueue()<3) // Adjust these parameters
                     return true;
                 else
                     return false;
@@ -3355,8 +3355,8 @@ void Tracking::CreateNewKeyFrame()
     }
 
     // Add new KF to Dynamics thread
-    mpLocalMapper->InsertKeyFrame(pKF);
-    // mpDynamicCuller->InsertKeyFrame(pKF);
+    // mpLocalMapper->InsertKeyFrame(pKF);
+    mpDynamicCuller->InsertKeyFrame(pKF);
 
     mpLocalMapper->SetNotStop(false);
 

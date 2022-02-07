@@ -93,6 +93,9 @@ void Segment::Run()
                 std::chrono::steady_clock::time_point t3 = std::chrono::steady_clock::now();
                 // Recognize by Semantic segmentation
                 mImgSegment=classifier->Predict(mImg, label_colours);
+                std::chrono::steady_clock::time_point t4 = std::chrono::steady_clock::now();
+                double mPredictionTime = std::chrono::duration_cast<std::chrono::duration<double> >(t4 - t3).count();
+                std::cout << "Prediction time =" << mPredictionTime*1000 << std::endl;
 
                 mImgSegment_color = mImgSegment.clone();
                 cv::cvtColor(mImgSegment,mImgSegment_color, cv::COLOR_GRAY2BGR);
@@ -104,17 +107,22 @@ void Segment::Run()
                 int morph_size = 15;
                 cv::Mat kernel = getStructuringElement( cv::MORPH_ELLIPSE, cv::Size( 2*morph_size + 1, 2*morph_size+1 ), cv::Point( morph_size, morph_size ) );
                 cv::morphologyEx(mImgSegment_color_final, temp, 2, kernel);
-                std::chrono::steady_clock::time_point t4 = std::chrono::steady_clock::now();
-                mSegmentTime = std::chrono::duration_cast<std::chrono::duration<double> >(t4 - t3).count();
+                std::chrono::steady_clock::time_point t5 = std::chrono::steady_clock::now();
+                double mThreadTime = std::chrono::duration_cast<std::chrono::duration<double> >(t5 - t3).count();
+                std::cout << "In thread process time =" << mThreadTime*1000 << std::endl;
                 vTimesDetectSegNet.push_back(mSegmentTime);
                 mSkipIndex=0;
                 imgIndex++;
                 mImgSegment_color_final = temp.clone();
-                // cv::imshow("SegNet", mImgSegment_color_final);
-                // cv::waitKey(1);
+                cv::imshow("SegNet", mImgSegment_color_final);
+                cv::waitKey(1);
             }
             mSkipIndex++;
+            std::chrono::steady_clock::time_point t6 = std::chrono::steady_clock::now();
             ProduceImgSegment();
+            std::chrono::steady_clock::time_point t7 = std::chrono::steady_clock::now();
+            double mProduceImgTime = std::chrono::duration_cast<std::chrono::duration<double> >(t7 - t6).count();
+            std::cout << "Image producing time =" << mProduceImgTime*1000 << std::endl;
             
         }
         if(CheckFinish())

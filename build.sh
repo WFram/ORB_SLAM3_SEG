@@ -31,9 +31,9 @@ echo "Configuring and building Thirdparty/caffe-segnet ..."
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release \
-            -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 #\
+            -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 # \
 #            -DCUDNN_INCLUDE="/usr/local/cuda-11.2/include" \
-#            -DCUDNN_LIBRARY="/usr/local/cuda-11.2/lib64" 
+#            -DCUDNN_LIBRARY="/usr/local/cuda-11.2/lib64"
 make -j2
 
 cd ../../../

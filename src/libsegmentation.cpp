@@ -31,7 +31,7 @@ Classifier::Classifier(const string& model_file,
 cv::Mat Classifier::Predict(const cv::Mat& img, cv::Mat LUT_image) 
 {
 
-    std::vector<Blob<float>*> input_layer_vector; // WF
+    // std::vector<Blob<float>*> input_layer_vector; // WF
     Blob<float>* input_layer = net_->input_blobs()[0];
 
     input_layer->Reshape(1, num_channels_, input_geometry_.height, input_geometry_.width);
@@ -44,11 +44,12 @@ cv::Mat Classifier::Predict(const cv::Mat& img, cv::Mat LUT_image)
 
     Preprocess(img, &input_channels);
 
-    input_layer_vector.push_back(input_layer); // WF
-    float *loss = NULL; // WF
+    // input_layer_vector.push_back(input_layer); // WF
+    // float *loss = NULL; // WF
     std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-    // net_->Forward(); // WF
-    net_->Forward(input_layer_vector, loss); // WF
+    net_->Forward();
+    // net_->Forward(loss); // WF
+    // net_->Forward(input_layer_vector, loss); // WF
     std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
     double track= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
     std::cout << "process time =" << track*1000 << std::endl;
