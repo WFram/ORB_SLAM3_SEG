@@ -1,0 +1,13 @@
+build
+Thirdparty/*/build
+CameraTrajectory.txt
+f_tum_xyz.txt
+kf_tum_xyz.txt
+time_statistic_K-Means.txt
+time_statistic_SegNet.txt
+.vscode/launch.json
+Examples/Stereo/stereo_kitti
+lib/libORB_SLAM3_SEG.so
+Thirdparty/caffe-segnet
+Thirdparty/g2o/lib/libg2o.so
+Vocabulary/ORBvoc.txt

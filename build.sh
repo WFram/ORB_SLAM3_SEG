@@ -15,14 +15,14 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j2
 
-cd ../../Sophus
+# cd ../../Sophus
 
-echo "Configuring and building Thirdparty/Sophus ..."
+# echo "Configuring and building Thirdparty/Sophus ..."
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j2
+# mkdir build
+# cd build
+# cmake .. -DCMAKE_BUILD_TYPE=Release
+# make -j2
 
 cd ../../caffe-segnet
 
